@@ -156,23 +156,26 @@
 
                 <!-- Animated Radar Logo (RESTORED & ENLARGED) -->
                 
-                <div class="mb-6 animate-float">
-                            <svg class="w-32 h-32 md:w-48 md:h-48 drop-shadow-[0_0_15px_rgba(56,189,248,0.5)]" viewBox="0 0 100 100" fill="none" stroke="url(#grad1)" stroke-width="2">
-                                <defs>
-                                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#2dd4bf;stop-opacity:1"></stop>
-                                        <stop offset="100%" style="stop-color:#818cf8;stop-opacity:1"></stop>
-                                    </linearGradient>
-                                </defs>
-                                <circle cx="50" cy="50" r="40" stroke-opacity="0.2"></circle>
-                                <path d="M50 10 L50 90 M10 50 L90 50" stroke-dasharray="2 2"></path>
-                                <circle cx="50" cy="50" r="20" class="animate-pulse-slow"></circle>
-                                <path d="M50 30 L65 45 L50 45 L50 30" fill="rgba(45, 212, 191, 0.5)">
-                                    <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="10s" repeatCount="indefinite"></animateTransform>
-                                </path>
-                                <circle cx="85" cy="50" r="4" fill="#38bdf8"></circle>
-                            </svg>
-                        </div>
+                <!-- Animated Radar Logo -->
+                <div class="relative w-48 h-48 md:w-64 md:h-64 mb-6 animate-float">
+                    <!-- Radar Rings -->
+                    <svg viewBox="0 0 100 100" class="w-full h-full absolute top-0 left-0 opacity-80">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#3b82f6" stroke-width="0.5" stroke-opacity="0.3" />
+                        <circle cx="50" cy="50" r="35" fill="none" stroke="#3b82f6" stroke-width="0.5" stroke-opacity="0.5" />
+                        <circle cx="50" cy="50" r="25" fill="none" stroke="#3b82f6" stroke-width="0.5" stroke-opacity="0.7" />
+                        <circle cx="50" cy="50" r="15" fill="none" stroke="#06b6d4" stroke-width="1" />
+                        <circle cx="50" cy="50" r="2" fill="#fff" />
+                        <!-- Sweeping Sector -->
+                        <path d="M50 50 L50 5 A45 45 0 0 1 95 50 Z" fill="url(#grad1)" class="origin-center animate-radar-spin" opacity="0.4" />
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:rgb(6,182,212);stop-opacity:0" />
+                                <stop offset="100%" style="stop-color:rgb(6,182,212);stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                   
+                </div>
 
                 <!-- Title -->
                 <div class="z-10 animate-slide-up" style="animation-delay: 0.3s;">
