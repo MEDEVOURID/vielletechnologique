@@ -1,22 +1,18 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veille Technologique - Master MSII</title>
+    <title>La Veille Technologique - Master MSII</title>
     
-    <!-- Fonts: Cairo for a modern, tech, slightly eastern aesthetic -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Configuration for Tailwind -->
     <script>
         tailwind.config = {
             theme: {
@@ -25,32 +21,38 @@
                         sans: ['Cairo', 'sans-serif'],
                     },
                     colors: {
-                        tech: {
-                            900: '#0f172a',
-                            800: '#1e293b',
-                            500: '#3b82f6',
-                            400: '#60a5fa',
-                            accent: '#06b6d4', // Cyan
+                        brand: {
+                            dark: '#0f172a',    // Slate 900
+                            glass: 'rgba(15, 23, 42, 0.85)',
+                            cyan: '#06b6d4',
+                            green: '#10b981',
                             purple: '#8b5cf6',
-                            pink: '#ec4899',   // Added for Quantum slide
                         }
                     },
                     animation: {
-                        'radar-spin': 'spin 3s linear infinite', /* Accéléré légèrement */
-                        'orbit': 'spin 10s linear infinite',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'spin-radar': 'spin 4s linear infinite', 
+                        'pulse-glow': 'pulseGlow 3s infinite',
                         'float': 'float 6s ease-in-out infinite',
-                        'slide-up': 'slideUp 0.8s ease-out forwards',
-                        'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite', /* Ajouté pour les blips */
+                        'blip': 'blip 2s infinite',
                     },
                     keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '1', filter: 'drop-shadow(0 0 5px rgba(6,182,212,0.5))' },
+                            '50%': { opacity: '0.7', filter: 'drop-shadow(0 0 15px rgba(6,182,212,0.8))' },
+                        },
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-10px)' },
                         },
-                        slideUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        blip: {
+                            '0%': { transform: 'scale(0)', opacity: 0 },
+                            '50%': { transform: 'scale(1)', opacity: 1 },
+                            '100%': { transform: 'scale(1.5)', opacity: 0 }
                         }
                     }
                 }
@@ -59,825 +61,712 @@
     </script>
 
     <style>
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #3b82f6;
-            border-radius: 4px;
+        /* Styles Globaux & Utilitaires */
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+            overflow: hidden; /* Empêche le défilement en mode présentation */
         }
 
-        /* Glassmorphism Utilities */
+        /* Glassmorphism Panel */
         .glass-panel {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        .glass-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
-        }
-        
-        .glass-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(6, 182, 212, 0.4);
-            box-shadow: 0 10px 40px -10px rgba(6, 182, 212, 0.3);
+        /* Texte Gradient */
+        .text-gradient {
+            background: linear-gradient(to right, #22d3ee, #34d399, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        /* Slide Transitions */
-        .slide {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-        .slide.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        /* Quantum Atom Animation */
-        .atom-path {
+        /* Animation Atome Quantique */
+        .atom-orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            border-radius: 50%;
             transform-style: preserve-3d;
         }
 
-        /* Print Styles */
+        /* Styles pour l'impression (Mode Notes) */
         @media print {
-            body { background: white; color: black; }
-            #bg-canvas, .controls, .slide-nav { display: none !important; }
-            .slide { display: block !important; opacity: 1 !important; page-break-after: always; height: auto !important; min-height: 0 !important; overflow: visible !important; }
-            .glass-panel, .glass-card { background: none; border: 1px solid #ccc; color: black; box-shadow: none; backdrop-filter: none; }
-            h1, h2, h3, p, li { color: black !important; text-shadow: none !important; }
-            .text-tech-accent, .text-tech-400, .text-tech-pink { color: #000 !important; font-weight: bold; }
+            body { overflow: auto; background: white; color: black; }
+            #bg-canvas, .nav-controls, .fullscreen-btn { display: none !important; }
+            .slide { 
+                position: relative !important; 
+                opacity: 1 !important; 
+                display: block !important; 
+                page-break-after: always;
+                min-height: 100vh;
+                padding: 2rem;
+                background: white !important;
+                color: black !important;
+            }
+            .glass-panel { 
+                background: none; 
+                border: 1px solid #ccc; 
+                box-shadow: none; 
+                color: black !important; 
+            }
+            .text-white, .text-slate-200, .text-slate-300 { color: #000 !important; }
+            .text-cyan-400 { color: #006080 !important; }
+            h1, h2, h3 { color: #000 !important; -webkit-text-fill-color: black !important; }
         }
 
-        /* Typography overrides for presentation readability */
-        h1 { line-height: 1.2; }
-        p { line-height: 1.6; }
+        /* Scrollbar custom pour contenu interne */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
     </style>
 </head>
-<body class="bg-tech-900 text-white h-screen w-screen overflow-hidden relative selection:bg-tech-accent selection:text-black">
+<body class="h-screen w-screen relative text-left font-sans selection:bg-cyan-500 selection:text-white">
 
-    <!-- CANVAS BACKGROUND -->
-    <canvas id="bg-canvas" class="absolute top-0 left-0 w-full h-full z-0 pointer-events-auto"></canvas>
+    <canvas id="bg-canvas" class="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"></canvas>
 
-    <!-- MAIN CONTAINER -->
-    <main class="relative z-10 w-full h-full flex flex-col items-center justify-center p-4 md:p-8">
+    <main class="relative z-10 w-full h-full flex flex-col justify-center items-center p-4 md:p-6 lg:p-8">
         
-        <!-- HEADER / PROGRESS -->
-        <header class="absolute top-0 left-0 w-full p-6 flex justify-between items-center z-20">
-            <div class="flex items-center gap-3">
-                <i class="fa-solid fa-eye text-tech-accent text-xl animate-pulse"></i>
-                <span class="text-sm font-light tracking-widest uppercase opacity-70">Master MSII • 2025/2026</span>
-            </div>
-            <div class="text-xs text-right opacity-50">
-                <span id="slide-indicator">01 / 09</span>
-            </div>
-        </header>
-
-        <!-- SLIDES WRAPPER -->
-        <div id="slide-container" class="w-full max-w-7xl h-full max-h-[85vh] relative flex items-center justify-center">
-
-            <!-- SLIDE 0: COVER -->
-            <section class="slide active w-full h-full flex-col justify-center items-center text-center space-y-6" data-step="0">
-                <!-- University / Context -->
-                <div class="animate-slide-up mb-4" style="animation-delay: 0.1s;">
-                    <p class="text-xs md:text-sm font-light tracking-[0.2em] text-tech-400 uppercase mb-2">Université Mohammed Premier</p>
-                    <p class="text-[10px] md:text-xs opacity-60 uppercase">Faculté des Sciences Juridiques, Économiques et Sociales - Oujda</p>
-                </div>
-
-                <!-- Animated Radar Logo (RESTORED & ENLARGED) -->
-                
-                <!-- Animated Radar Logo -->
-                <div class="relative w-48 h-48 md:w-64 md:h-64 mb-6 animate-float">
-                    <!-- Radar Rings -->
-                    <svg viewBox="0 0 100 100" class="w-full h-full absolute top-0 left-0 opacity-80">
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="#3b82f6" stroke-width="0.5" stroke-opacity="0.3" />
-                        <circle cx="50" cy="50" r="35" fill="none" stroke="#3b82f6" stroke-width="0.5" stroke-opacity="0.5" />
-                        <circle cx="50" cy="50" r="25" fill="none" stroke="#3b82f6" stroke-width="0.5" stroke-opacity="0.7" />
-                        <circle cx="50" cy="50" r="15" fill="none" stroke="#06b6d4" stroke-width="1" />
-                        <circle cx="50" cy="50" r="2" fill="#fff" />
-                        <!-- Sweeping Sector -->
-                        <path d="M50 50 L50 5 A45 45 0 0 1 95 50 Z" fill="url(#grad1)" class="origin-center animate-radar-spin" opacity="0.4" />
-                        <defs>
-                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" style="stop-color:rgb(6,182,212);stop-opacity:0" />
-                                <stop offset="100%" style="stop-color:rgb(6,182,212);stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                   
-                </div>
-
-                <!-- Title -->
-                <div class="z-10 animate-slide-up" style="animation-delay: 0.3s;">
-                    <h1 class="text-5xl md:text-7xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-tech-accent via-blue-500 to-tech-purple drop-shadow-lg">
-                        LA VEILLE<br>TECHNOLOGIQUE
-                    </h1>
-                    <div class="h-1 w-32 bg-gradient-to-r from-transparent via-tech-accent to-transparent mx-auto mt-6"></div>
-                </div>
-
-                <!-- Presenters -->
-                <div class="flex flex-col md:flex-row gap-8 mt-12 animate-slide-up glass-panel p-6 rounded-2xl" style="animation-delay: 0.5s;">
-                    <div class="text-right border-r border-gray-600 pr-6">
-                        <p class="text-xs text-tech-400 uppercase mb-1">Réalisé par</p>
-                        <p class="font-bold text-lg">MOHAMED OURID</p>
-                        <p class="font-bold text-lg">AYOUB LANOUARI</p>
-                    </div>
-                    <div class="text-left pl-2">
-                        <p class="text-xs text-tech-400 uppercase mb-1">Encadré par</p>
-                        <p class="font-bold text-lg text-tech-accent">Pr. BENYOUNES Rahouti</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SLIDE 1: INTRODUCTION -->
-            <section class="slide w-full h-full flex-col justify-center px-4 md:px-16" data-step="1">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                    <div class="animate-slide-up">
-                        <h2 class="text-4xl font-bold mb-6 border-l-4 border-tech-accent pl-4">L'ère de l'Information</h2>
-                        <p class="text-xl text-gray-300 leading-relaxed mb-6">
-                            Dans un environnement économique instable et hyper-concurrentiel, l'information est devenue la <span class="text-tech-accent font-bold">matière première stratégique</span> par excellence.
-                        </p>
-                        <div class="glass-panel p-6 rounded-xl border-l-4 border-tech-purple">
-                            <i class="fa-solid fa-quote-left text-2xl text-tech-purple mb-2"></i>
-                            <p class="italic text-lg">
-                                "L'objectif n'est pas de tout savoir, mais de donner la <span class="text-white font-bold">bonne information</span> à la <span class="text-white font-bold">bonne personne</span>, au <span class="text-white font-bold">bon moment</span>, pour prendre la <span class="text-white font-bold">bonne décision</span>."
-                            </p>
-                        </div>
-                    </div>
+        <div id="slide-container" class="w-full max-w-7xl h-full md:h-[90vh] relative">
+            
+            <section class="slide absolute inset-0 flex flex-col justify-center items-center text-center space-y-6" data-step="0">
+                <div class="glass-panel p-8 md:p-12 rounded-3xl w-full max-w-5xl border-l-4 border-cyan-500 animate-fade-in-up text-left relative overflow-hidden">
                     
-                    <!-- Visual: Info Stream -->
-                    <div class="relative h-64 md:h-96 glass-panel rounded-2xl p-4 overflow-hidden flex items-center justify-center animate-slide-up" style="animation-delay: 0.2s;">
-                        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-tech-500/10 to-transparent animate-pulse"></div>
-                        <div class="grid grid-cols-2 gap-4 w-full">
-                            <div class="glass-card p-4 rounded-lg text-center">
-                                <i class="fa-solid fa-database text-3xl text-tech-400 mb-2"></i>
-                                <h3 class="font-bold">Big Data</h3>
-                                <p class="text-xs opacity-70">Volume Massif</p>
+                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl"></div>
+
+                    <div class="border-b border-slate-700 pb-4 mb-6">
+                        <span class="px-3 py-1 bg-cyan-900/50 text-cyan-300 text-xs font-bold rounded-full uppercase tracking-wider">Master d'Excellence</span>
+                        <h3 class="text-slate-300 text-sm md:text-base font-semibold mt-2 uppercase tracking-wide">
+                            Management des Systèmes d'Information Intelligents (MSII)
+                        </h3>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row items-center gap-8 mb-8">
+                        
+                        <div class="w-32 h-32 md:w-40 md:h-40 relative flex-shrink-0 bg-slate-900 rounded-full border border-slate-700 shadow-[0_0_20px_rgba(6,182,212,0.3)] overflow-hidden">
+                            <svg viewBox="0 0 100 100" class="w-full h-full">
+                                <circle cx="50" cy="50" r="45" stroke="#1e293b" stroke-width="0.5" fill="none" />
+                                <circle cx="50" cy="50" r="30" stroke="#1e293b" stroke-width="0.5" fill="none" />
+                                <circle cx="50" cy="50" r="15" stroke="#1e293b" stroke-width="0.5" fill="none" />
+                                
+                                <line x1="50" y1="5" x2="50" y2="95" stroke="#1e293b" stroke-width="0.5" />
+                                <line x1="5" y1="50" x2="95" y2="50" stroke="#1e293b" stroke-width="0.5" />
+                                
+                                <circle cx="50" cy="50" r="2" fill="#fff" />
+
+                                <g class="animate-spin-radar origin-center">
+                                    <path d="M50 50 L50 5 A45 45 0 0 1 95 50 Z" fill="url(#radar-gradient)" opacity="0.5" />
+                                    <line x1="50" y1="50" x2="50" y2="5" stroke="#22d3ee" stroke-width="1.5" stroke-linecap="round" shadow="0 0 5px #22d3ee" />
+                                </g>
+
+                                <circle cx="70" cy="30" r="2" fill="#10b981" class="animate-blip" style="animation-delay: 0.5s;" />
+                                <circle cx="25" cy="65" r="2" fill="#f43f5e" class="animate-blip" style="animation-delay: 2s;" />
+                                <circle cx="60" cy="80" r="1.5" fill="#a78bfa" class="animate-blip" style="animation-delay: 3.2s;" />
+
+                                <defs>
+                                    <linearGradient id="radar-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#22d3ee;stop-opacity:0.8" />
+                                        <stop offset="100%" style="stop-color:#22d3ee;stop-opacity:0" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        
+                        <div>
+                            <h1 class="text-4xl md:text-6xl font-black leading-tight mb-2 text-gradient">
+                                LA VEILLE TECHNOLOGIQUE
+                            </h1>
+                            <p class="text-lg md:text-xl text-slate-400 italic">"Anticiper les ruptures, piloter l'innovation"</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/40 p-6 rounded-xl border border-slate-700/50">
+                        <div>
+                            <p class="text-xs text-cyan-400 uppercase font-bold mb-3">Présenté par :</p>
+                            <ul class="space-y-2 text-white font-bold text-sm md:text-base">
+                                <li class="flex items-center"><i class="fas fa-user-graduate w-6 text-slate-500"></i> OURID Mohamed</li>
+                                <li class="flex items-center"><i class="fas fa-user-graduate w-6 text-slate-500"></i> LANOUARI AYOUB</li>
+                            </ul>
+                        </div>
+                        <div class="md:border-l md:border-slate-700 md:pl-6 flex flex-col justify-center">
+                            <p class="text-xs text-purple-400 uppercase font-bold mb-2">Sous l'encadrement de :</p>
+                            <p class="text-white font-bold text-lg md:text-xl"><i class="fas fa-chalkboard-teacher mr-2 text-slate-500"></i> Pr. BENYOUNES Rahouti</p>
+                            <p class="text-xs text-slate-500 mt-2">Année Universitaire 2025/2026</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="slide hidden absolute inset-0 flex flex-col justify-center items-center" data-step="1">
+                <div class="glass-panel p-8 md:p-12 rounded-3xl w-full max-w-5xl animate-fade-in-up border-l-8 border-red-500">
+                    <div class="flex items-center mb-8">
+                        <div class="w-14 h-14 rounded-full bg-red-500/20 flex items-center justify-center mr-4 shadow-lg shadow-red-500/10">
+                            <i class="fas fa-question text-3xl text-red-400 animate-float"></i>
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-white">Problématique</h2>
+                    </div>
+
+                    <div class="space-y-8">
+                        <p class="text-xl md:text-3xl font-light text-slate-200 leading-relaxed text-justify">
+                            "Dans un écosystème marqué par l'infobésité et l'accélération technologique, comment structurer une <span class="text-cyan-400 font-bold">veille intelligente</span> capable de transformer l'information brute en décision stratégique ?"
+                        </p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                            <div class="bg-slate-800/50 p-6 rounded-xl text-center border border-slate-700 hover:border-cyan-500 transition-colors">
+                                <i class="fas fa-database text-4xl text-cyan-500 mb-3"></i>
+                                <h3 class="text-lg font-bold text-white">Big Data</h3>
+                                <p class="text-xs text-slate-400">Comment filtrer le bruit ?</p>
                             </div>
-                            <div class="glass-card p-4 rounded-lg text-center border-tech-accent/50 border">
-                                <i class="fa-solid fa-filter text-3xl text-tech-accent mb-2"></i>
-                                <h3 class="font-bold">Information Pertinente</h3>
-                                <p class="text-xs opacity-70">Valeur Stratégique</p>
+                            <div class="bg-slate-800/50 p-6 rounded-xl text-center border border-slate-700 hover:border-green-500 transition-colors">
+                                <i class="fas fa-stopwatch text-4xl text-green-500 mb-3"></i>
+                                <h3 class="text-lg font-bold text-white">Vélocité</h3>
+                                <p class="text-xs text-slate-400">Agir en temps réel</p>
                             </div>
-                            <div class="col-span-2 glass-card p-4 rounded-lg text-center bg-tech-accent/10">
-                                <i class="fa-solid fa-lightbulb text-3xl text-yellow-400 mb-2"></i>
-                                <h3 class="font-bold">Innovation Décisive</h3>
-                                <p class="text-xs opacity-70">Avantage Concurrentiel</p>
+                            <div class="bg-slate-800/50 p-6 rounded-xl text-center border border-slate-700 hover:border-purple-500 transition-colors">
+                                <i class="fas fa-chess text-4xl text-purple-500 mb-3"></i>
+                                <h3 class="text-lg font-bold text-white">Stratégie</h3>
+                                <p class="text-xs text-slate-400">Anticiper la concurrence</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- SLIDE 2: FONDEMENTS & DÉFINITIONS -->
-            <section class="slide w-full h-full flex-col justify-start pt-12 px-4 md:px-12 overflow-y-auto" data-step="2">
-                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center"><span class="text-tech-accent">1.</span> Fondements Conceptuels</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl mx-auto">
-                    <!-- Card 1: Definition -->
-                    <div class="glass-panel p-6 rounded-2xl md:col-span-2 animate-slide-up">
-                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-book-open text-tech-accent"></i> Définition
-                        </h3>
-                        <p class="text-gray-300 text-sm md:text-base mb-4">
-                            Selon l'AFNOR (XP X 50-053), la veille est une activité <strong>continue</strong> et en grande partie <strong>itérative</strong> visant à une surveillance active de l'environnement technologique, commercial, etc., pour en anticiper les évolutions.
-                        </p>
-                        <div class="bg-black/30 p-4 rounded-lg">
-                            <ul class="space-y-2 text-sm">
-                                <li class="flex items-start gap-2">
-                                    <i class="fa-solid fa-check text-green-400 mt-1"></i>
-                                    <span>Processus systématique de collecte et d'analyse.</span>
+            <section class="slide hidden absolute inset-0 flex flex-col justify-center items-center" data-step="2">
+                <div class="glass-panel p-8 md:p-10 rounded-3xl w-full max-w-4xl animate-fade-in-up">
+                    <h2 class="text-3xl font-bold text-white mb-8 border-b border-slate-700 pb-4 flex items-center">
+                        <i class="fas fa-list-ul text-cyan-400 mr-4"></i> Plan de la présentation
+                    </h2>
+                    
+                    <div class="grid gap-4">
+                        <div class="flex items-center p-4 bg-slate-800/40 rounded-xl hover:bg-slate-800/80 transition-all transform hover:translate-x-2">
+                            <span class="flex items-center justify-center w-10 h-10 rounded-full bg-cyan-600 text-white font-bold mr-5 shadow-lg shadow-cyan-500/20">1</span>
+                            <div>
+                                <h3 class="text-lg font-bold text-white">Définitions & Concepts</h3>
+                                <p class="text-xs text-slate-400">Distinction entre Veille et Recherche</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-4 bg-slate-800/40 rounded-xl hover:bg-slate-800/80 transition-all transform hover:translate-x-2">
+                            <span class="flex items-center justify-center w-10 h-10 rounded-full bg-green-600 text-white font-bold mr-5 shadow-lg shadow-green-500/20">2</span>
+                            <div>
+                                <h3 class="text-lg font-bold text-white">Le Cycle de la Veille</h3>
+                                <p class="text-xs text-slate-400">Processus normatif (AFNOR)</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-4 bg-slate-800/40 rounded-xl hover:bg-slate-800/80 transition-all transform hover:translate-x-2">
+                            <span class="flex items-center justify-center w-10 h-10 rounded-full bg-amber-600 text-white font-bold mr-5 shadow-lg shadow-amber-500/20">3</span>
+                            <div>
+                                <h3 class="text-lg font-bold text-white">Statistiques : Le Maroc Numérique</h3>
+                                <p class="text-xs text-slate-400">Données réelles et références</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-4 bg-indigo-900/30 border border-indigo-500/40 rounded-xl hover:bg-indigo-900/50 transition-all transform hover:translate-x-2 shadow-lg shadow-indigo-500/10">
+                            <span class="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-600 text-white font-bold mr-5 animate-pulse"><i class="fas fa-atom"></i></span>
+                            <div>
+                                <h3 class="text-lg font-bold text-indigo-200">Focus : L'Informatique Quantique</h3>
+                                <p class="text-xs text-slate-400">Impact futur sur la Veille & Sécurité</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-4 bg-slate-800/40 rounded-xl hover:bg-slate-800/80 transition-all transform hover:translate-x-2">
+                            <span class="flex items-center justify-center w-10 h-10 rounded-full bg-slate-600 text-white font-bold mr-5">5</span>
+                            <div>
+                                <h3 class="text-lg font-bold text-white">Conclusion & Perspectives</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="slide hidden absolute inset-0 flex flex-col justify-center items-center" data-step="3">
+                <div class="glass-panel p-8 rounded-3xl w-full max-w-6xl animate-fade-in-up">
+                    <h2 class="text-3xl font-bold text-white mb-6 pl-4 border-l-4 border-cyan-500">Définition & Nuance</h2>
+                    
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <div class="md:w-1/2 space-y-6">
+                            <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700">
+                                <h3 class="text-cyan-400 font-bold text-xl mb-3"><i class="fas fa-search mr-2"></i>La Veille Technologique</h3>
+                                <p class="text-slate-300 text-justify leading-relaxed text-sm md:text-base">
+                                    C'est un processus informationnel <strong>continu</strong>, itératif et ciblé. Elle vise à surveiller l'environnement scientifique et technique pour anticiper les évolutions, détecter les opportunités d'innovation et réduire les risques d'obsolescence.
+                                </p>
+                            </div>
+                            
+                            <div class="p-4 bg-slate-900/50 rounded-lg">
+                                <h4 class="text-white font-bold mb-3 text-sm">Les Dimensions de la Veille :</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-3 py-1 bg-cyan-900/60 text-cyan-200 rounded-full text-xs border border-cyan-700">Concurrentielle</span>
+                                    <span class="px-3 py-1 bg-green-900/60 text-green-200 rounded-full text-xs border border-green-700">Commerciale</span>
+                                    <span class="px-3 py-1 bg-purple-900/60 text-purple-200 rounded-full text-xs border border-purple-700">Juridique</span>
+                                    <span class="px-3 py-1 bg-pink-900/60 text-pink-200 rounded-full text-xs border border-pink-700">E-Réputation</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="md:w-1/2">
+                            <div class="overflow-hidden rounded-xl border border-slate-700">
+                                <table class="w-full text-sm text-left text-slate-300">
+                                    <thead class="text-xs text-white uppercase bg-slate-800">
+                                        <tr>
+                                            <th class="px-4 py-4">Critère</th>
+                                            <th class="px-4 py-4 text-slate-400">Recherche Documentaire</th>
+                                            <th class="px-4 py-4 text-cyan-400 bg-cyan-900/20">Veille Stratégique</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-700">
+                                        <tr class="bg-slate-900/40">
+                                            <td class="px-4 py-3 font-bold">Temporalité</td>
+                                            <td class="px-4 py-3">Ponctuelle (Passé)</td>
+                                            <td class="px-4 py-3 text-white font-semibold bg-cyan-900/10">Continue (Futur)</td>
+                                        </tr>
+                                        <tr class="bg-slate-900/40">
+                                            <td class="px-4 py-3 font-bold">Objectif</td>
+                                            <td class="px-4 py-3">Répondre à une question</td>
+                                            <td class="px-4 py-3 text-white font-semibold bg-cyan-900/10">Anticiper / Décider</td>
+                                        </tr>
+                                        <tr class="bg-slate-900/40">
+                                            <td class="px-4 py-3 font-bold">Nature</td>
+                                            <td class="px-4 py-3">Stock d'info</td>
+                                            <td class="px-4 py-3 text-white font-semibold bg-cyan-900/10">Flux d'info</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="mt-6 flex justify-center">
+                                <svg width="200" height="100" viewBox="0 0 200 100">
+                                    <circle cx="70" cy="50" r="40" fill="rgba(6,182,212,0.2)" stroke="#06b6d4" stroke-width="2"/>
+                                    <circle cx="130" cy="50" r="40" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="2"/>
+                                    <text x="50" y="55" fill="#cbd5e1" font-size="10" font-family="sans-serif">Tech</text>
+                                    <text x="135" y="55" fill="#cbd5e1" font-size="10" font-family="sans-serif">Marché</text>
+                                    <text x="100" y="55" fill="white" font-size="9" font-weight="bold" text-anchor="middle">Innovation</text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="slide hidden absolute inset-0 flex flex-col justify-center items-center" data-step="4">
+                <div class="glass-panel p-8 rounded-3xl w-full max-w-7xl animate-fade-in-up">
+                    <h2 class="text-3xl font-bold text-white mb-10 text-center">Le Cycle de la Veille (Norme AFNOR XP X 50-053)</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
+                        <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-slate-700 -z-10 transform -translate-y-1/2 rounded-full"></div>
+
+                        <div class="bg-slate-800 p-6 rounded-xl border-t-4 border-cyan-500 hover:-translate-y-2 transition duration-300 shadow-xl group">
+                            <div class="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center mb-4 mx-auto border-2 border-cyan-500 group-hover:scale-110 transition">
+                                <i class="fas fa-bullseye text-cyan-400"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-lg text-center mb-2">1. Ciblage</h3>
+                            <p class="text-xs text-slate-400 text-center">Définition des axes stratégiques (Plan de veille) et des sources (Sourcing).</p>
+                        </div>
+
+                        <div class="bg-slate-800 p-6 rounded-xl border-t-4 border-green-500 hover:-translate-y-2 transition duration-300 shadow-xl group">
+                            <div class="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center mb-4 mx-auto border-2 border-green-500 group-hover:scale-110 transition">
+                                <i class="fas fa-network-wired text-green-400"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-lg text-center mb-2">2. Collecte</h3>
+                            <p class="text-xs text-slate-400 text-center">Automatisation (RSS, Scraping, API) des informations formelles et informelles.</p>
+                        </div>
+
+                        <div class="bg-slate-800 p-6 rounded-xl border-t-4 border-purple-500 hover:-translate-y-2 transition duration-300 shadow-xl group">
+                            <div class="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center mb-4 mx-auto border-2 border-purple-500 group-hover:scale-110 transition">
+                                <i class="fas fa-brain text-purple-400"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-lg text-center mb-2">3. Analyse</h3>
+                            <p class="text-xs text-slate-400 text-center">Tri, vérification, synthèse et ajout de valeur ajoutée (Humain + IA).</p>
+                        </div>
+
+                        <div class="bg-slate-800 p-6 rounded-xl border-t-4 border-yellow-500 hover:-translate-y-2 transition duration-300 shadow-xl group">
+                            <div class="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center mb-4 mx-auto border-2 border-yellow-500 group-hover:scale-110 transition">
+                                <i class="fas fa-share-alt text-yellow-400"></i>
+                            </div>
+                            <h3 class="font-bold text-white text-lg text-center mb-2">4. Diffusion</h3>
+                            <p class="text-xs text-slate-400 text-center">Livrables (Newsletters, Rapports) pour la prise de décision.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="slide hidden absolute inset-0 flex flex-col justify-center items-center" data-step="5">
+                <div class="glass-panel p-6 rounded-3xl w-full max-w-6xl animate-fade-in-up">
+                    <h2 class="text-3xl font-bold text-white mb-2">Paysage Numérique au Maroc (2024)</h2>
+                    <div class="flex items-center gap-2 mb-6">
+                        <span class="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded"><i class="fas fa-book mr-1"></i> Source : DataReportal - Digital 2024 Morocco</span>
+                        <span class="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded"><i class="fas fa-university mr-1"></i> Source : ANRT</span>
+                    </div>
+
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3 space-y-4">
+                            <div class="bg-slate-800 p-4 rounded-lg border-l-4 border-cyan-500 shadow-lg flex justify-between items-center">
+                                <div>
+                                    <h4 class="text-slate-400 text-xs uppercase font-bold">Pénétration Internet</h4>
+                                    <div class="text-3xl font-bold text-white">34.57 M</div>
+                                    <p class="text-xs text-cyan-400 mt-1">90.7% de la population</p>
+                                </div>
+                                <i class="fas fa-wifi text-cyan-500/20 text-4xl"></i>
+                            </div>
+                            
+                            <div class="bg-slate-800 p-4 rounded-lg border-l-4 border-green-500 shadow-lg flex justify-between items-center">
+                                <div>
+                                    <h4 class="text-slate-400 text-xs uppercase font-bold">Connexions Mobiles</h4>
+                                    <div class="text-3xl font-bold text-white">55.97 M</div>
+                                    <p class="text-xs text-green-400 mt-1">146.9% de la population</p>
+                                </div>
+                                <i class="fas fa-mobile-alt text-green-500/20 text-4xl"></i>
+                            </div>
+
+                            <div class="bg-slate-800 p-4 rounded-lg border-l-4 border-purple-500 shadow-lg flex justify-between items-center">
+                                <div>
+                                    <h4 class="text-slate-400 text-xs uppercase font-bold">Réseaux Sociaux</h4>
+                                    <div class="text-3xl font-bold text-white">21.30 M</div>
+                                    <p class="text-xs text-slate-400 mt-1">Identités actives</p>
+                                </div>
+                                <i class="fas fa-users text-purple-500/20 text-4xl"></i>
+                            </div>
+                        </div>
+
+                        <div class="lg:w-2/3 bg-slate-800/50 p-6 rounded-xl border border-slate-700 flex flex-col justify-end relative h-64 md:h-auto">
+                            <h4 class="text-white font-bold mb-6 absolute top-6 left-6 text-sm">Évolution du Parc Internet (Millions d'abonnés)</h4>
+                            
+                            <div class="flex items-end justify-between w-full h-full pt-12 space-x-4 px-2">
+                                <div class="w-1/4 flex flex-col items-center group h-full justify-end">
+                                    <span class="text-xs text-slate-400 mb-1 opacity-0 group-hover:opacity-100 transition">29.8M</span>
+                                    <div class="w-full bg-slate-600 rounded-t-md relative h-[65%] group-hover:bg-cyan-700 transition-all duration-500"></div>
+                                    <span class="text-xs text-slate-400 mt-2 font-mono">2020</span>
+                                </div>
+                                <div class="w-1/4 flex flex-col items-center group h-full justify-end">
+                                    <span class="text-xs text-slate-400 mb-1 opacity-0 group-hover:opacity-100 transition">33.8M</span>
+                                    <div class="w-full bg-slate-500 rounded-t-md relative h-[75%] group-hover:bg-cyan-600 transition-all duration-500"></div>
+                                    <span class="text-xs text-slate-400 mt-2 font-mono">2021</span>
+                                </div>
+                                <div class="w-1/4 flex flex-col items-center group h-full justify-end">
+                                    <span class="text-xs text-slate-400 mb-1 opacity-0 group-hover:opacity-100 transition">36.3M</span>
+                                    <div class="w-full bg-slate-400 rounded-t-md relative h-[80%] group-hover:bg-cyan-500 transition-all duration-500"></div>
+                                    <span class="text-xs text-slate-400 mt-2 font-mono">2022</span>
+                                </div>
+                                <div class="w-1/4 flex flex-col items-center group h-full justify-end">
+                                    <span class="text-xs text-white font-bold mb-1">38.3M</span>
+                                    <div class="w-full bg-gradient-to-t from-cyan-600 to-green-400 rounded-t-md relative h-[90%] shadow-[0_0_15px_rgba(16,185,129,0.5)]">
+                                        <div class="absolute bottom-0 w-full bg-white/20 h-full animate-pulse"></div>
+                                    </div>
+                                    <span class="text-xs text-white font-bold mt-2 font-mono">2023</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="slide hidden absolute inset-0 flex flex-col justify-center items-center" data-step="6">
+                <div class="glass-panel p-8 rounded-3xl w-full max-w-6xl animate-fade-in-up">
+                    <h2 class="text-3xl font-bold text-white mb-6">Outils & Stack Technique</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl text-cyan-400 font-bold mb-4 flex items-center"><i class="fas fa-toolbox mr-2"></i>La "Stack" du Veilleur</h3>
+                            <ul class="space-y-3">
+                                <li class="bg-slate-800 p-3 rounded flex items-center hover:bg-slate-700 transition">
+                                    <i class="fab fa-google text-red-500 w-8 text-center"></i>
+                                    <div>
+                                        <span class="font-bold block text-slate-200 text-sm">Google Alerts / Trends</span>
+                                        <span class="text-xs text-slate-500">Monitoring de base (Gratuit)</span>
+                                    </div>
                                 </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fa-solid fa-check text-green-400 mt-1"></i>
-                                    <span>Aide à la prise de décision stratégique.</span>
+                                <li class="bg-slate-800 p-3 rounded flex items-center hover:bg-slate-700 transition">
+                                    <i class="fas fa-rss text-orange-500 w-8 text-center"></i>
+                                    <div>
+                                        <span class="font-bold block text-slate-200 text-sm">Feedly / Inoreader</span>
+                                        <span class="text-xs text-slate-500">Agrégateurs de flux RSS</span>
+                                    </div>
+                                </li>
+                                <li class="bg-slate-800 p-3 rounded flex items-center hover:bg-slate-700 transition">
+                                    <i class="fas fa-robot text-purple-500 w-8 text-center"></i>
+                                    <div>
+                                        <span class="font-bold block text-slate-200 text-sm">LLMs (ChatGPT, Perplexity)</span>
+                                        <span class="text-xs text-slate-500">Synthèse et analyse sémantique</span>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
-                    </div>
 
-                    <!-- Card 2: Context IE -->
-                    <div class="glass-panel p-6 rounded-2xl animate-slide-up" style="animation-delay: 0.2s;">
-                        <h3 class="text-xl font-bold mb-4 text-tech-purple">Intelligence Économique</h3>
-                        <div class="flex flex-col items-center justify-center h-48 relative">
-                            <!-- Simple Venn Diagram via CSS -->
-                            <div class="absolute w-24 h-24 rounded-full border-2 border-tech-accent bg-tech-accent/10 flex items-center justify-center top-0 left-4 text-[10px] font-bold">Veille</div>
-                            <div class="absolute w-24 h-24 rounded-full border-2 border-purple-500 bg-purple-500/10 flex items-center justify-center bottom-0 right-4 text-[10px] font-bold text-center">Protection<br>Patrimoine</div>
-                            <div class="absolute w-24 h-24 rounded-full border-2 border-blue-500 bg-blue-500/10 flex items-center justify-center bottom-0 left-4 text-[10px] font-bold text-center">Influence<br>Lobbying</div>
-                            <div class="absolute inset-0 flex items-center justify-center z-10 font-black text-white drop-shadow-md">IE</div>
+                        <div>
+                            <h3 class="text-xl text-green-400 font-bold mb-4 flex items-center"><i class="fas fa-code mr-2"></i>Automatisation (Python)</h3>
+                            <div class="bg-[#1e1e1e] p-4 rounded-lg border border-slate-700 font-mono text-xs overflow-x-auto text-slate-300 shadow-inner h-48 custom-scroll">
+<pre><span class="text-purple-400">import</span> requests
+<span class="text-purple-400">from</span> bs4 <span class="text-purple-400">import</span> BeautifulSoup
+
+<span class="text-gray-500"># Cible : Portail Tech Maroc</span>
+url = <span class="text-green-400">"https://tech-maroc.exemple/news"</span>
+response = requests.get(url)
+
+<span class="text-blue-400">if</span> response.status_code == 200:
+    soup = BeautifulSoup(response.content, <span class="text-green-400">'html.parser'</span>)
+    articles = soup.find_all(<span class="text-green-400">'h2'</span>, class_=<span class="text-green-400">'title'</span>)
+    
+    <span class="text-blue-400">for</span> art <span class="text-blue-400">in</span> articles:
+        title = art.text.strip()
+        print(<span class="text-green-400">f"[ALERT] Nouveau sujet: {title}"</span>)
+        <span class="text-gray-500"># TODO: Envoyer via API Telegram</span></pre>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2 italic border-l-2 border-green-500 pl-2">
+                                Le veilleur moderne en Master MSII doit savoir collecter la donnée non structurée via Scraping.
+                            </p>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Distinctions Table -->
-                <div class="mt-8 w-full max-w-6xl mx-auto animate-slide-up" style="animation-delay: 0.4s;">
-                    <div class="glass-panel rounded-xl overflow-hidden">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-tech-800 text-tech-accent uppercase">
-                                <tr>
-                                    <th class="p-4">Concept</th>
-                                    <th class="p-4">Focus</th>
-                                    <th class="p-4">Nature</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-700">
-                                <tr class="hover:bg-white/5 transition">
-                                    <td class="p-4 font-bold">Veille</td>
-                                    <td class="p-4">Anticipation, Opportunités</td>
-                                    <td class="p-4 text-green-400">Légale, Éthique</td>
-                                </tr>
-                                <tr class="hover:bg-white/5 transition">
-                                    <td class="p-4 font-bold">Espionnage</td>
-                                    <td class="p-4">Vol, Secret</td>
-                                    <td class="p-4 text-red-400">Illégal</td>
-                                </tr>
-                                <tr class="hover:bg-white/5 transition">
-                                    <td class="p-4 font-bold">Supervision</td>
-                                    <td class="p-4">État des systèmes (Logs)</td>
-                                    <td class="p-4 text-blue-400">Technique</td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </section>
 
-            <!-- SLIDE 3: LES 4 PÔLES (Typologie) -->
-            <section class="slide w-full h-full flex-col justify-center items-center px-4" data-step="3">
-                <h2 class="text-3xl font-bold mb-10">Typologie de la Veille</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl">
-                    <!-- Pole 1 -->
-                    <div class="glass-card p-6 rounded-xl border-l-4 border-blue-500 group cursor-pointer">
-                        <div class="flex items-center gap-4 mb-3">
-                            <div class="bg-blue-500/20 p-3 rounded-full group-hover:bg-blue-500 transition-colors">
-                                <i class="fa-solid fa-microchip text-blue-400 group-hover:text-white"></i>
-                            </div>
-                            <h3 class="text-xl font-bold">Veille Technologique</h3>
-                        </div>
-                        <p class="text-sm text-gray-400 pl-14">Surveiller les brevets, les normes, les ruptures technologiques et les travaux de recherche.</p>
-                    </div>
-
-                    <!-- Pole 2 -->
-                    <div class="glass-card p-6 rounded-xl border-l-4 border-red-500 group cursor-pointer">
-                        <div class="flex items-center gap-4 mb-3">
-                            <div class="bg-red-500/20 p-3 rounded-full group-hover:bg-red-500 transition-colors">
-                                <i class="fa-solid fa-chess text-red-400 group-hover:text-white"></i>
-                            </div>
-                            <h3 class="text-xl font-bold">Veille Concurrentielle</h3>
-                        </div>
-                        <p class="text-sm text-gray-400 pl-14">Analyse des concurrents actuels et potentiels, stratégie prix, nouveaux produits.</p>
-                    </div>
-
-                    <!-- Pole 3 -->
-                    <div class="glass-card p-6 rounded-xl border-l-4 border-green-500 group cursor-pointer">
-                        <div class="flex items-center gap-4 mb-3">
-                            <div class="bg-green-500/20 p-3 rounded-full group-hover:bg-green-500 transition-colors">
-                                <i class="fa-solid fa-handshake text-green-400 group-hover:text-white"></i>
-                            </div>
-                            <h3 class="text-xl font-bold">Veille Commerciale</h3>
-                        </div>
-                        <p class="text-sm text-gray-400 pl-14">Étude des clients, des fournisseurs, des marchés et des tendances de consommation.</p>
-                    </div>
-
-                    <!-- Pole 4 -->
-                    <div class="glass-card p-6 rounded-xl border-l-4 border-yellow-500 group cursor-pointer">
-                        <div class="flex items-center gap-4 mb-3">
-                            <div class="bg-yellow-500/20 p-3 rounded-full group-hover:bg-yellow-500 transition-colors">
-                                <i class="fa-solid fa-scale-balanced text-yellow-400 group-hover:text-white"></i>
-                            </div>
-                            <h3 class="text-xl font-bold">Environnementale & Juridique</h3>
-                        </div>
-                        <p class="text-sm text-gray-400 pl-14">Législation, géopolitique, évolutions sociétales et réglementaires.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SLIDE 4: MÉTHODOLOGIE (Cycle) -->
-        
-<section class="slide w-full h-full flex-col justify-center items-center px-2" data-step="4">
-                <h2 class="text-3xl md:text-4xl font-bold mb-8"><span class="text-tech-accent">III.</span> Le Cycle de la Veille</h2>
-                
-                <div class="relative w-full max-w-6xl h-auto md:h-96 flex flex-col md:flex-row items-center justify-between gap-2 p-4">
+            <section class="slide hidden absolute inset-0 flex flex-col justify-center items-center" data-step="7">
+                <div class="glass-panel p-8 rounded-3xl w-full max-w-6xl animate-fade-in-up border-t-4 border-indigo-500 relative overflow-hidden h-[80vh] flex flex-col justify-center">
                     
-                    <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-700 hidden md:block -z-10 transform -translate-y-1/2"></div>
+                    <div class="absolute top-0 right-0 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="flex items-center mb-6">
+                        <span class="w-12 h-12 rounded-full bg-indigo-900 flex items-center justify-center mr-4 border border-indigo-500/50">
+                            <i class="fas fa-atom text-2xl text-indigo-400 animate-spin-slow"></i>
+                        </span>
+                        <div>
+                            <h2 class="text-3xl font-bold text-white">Veille & Informatique Quantique</h2>
+                            <p class="text-sm text-indigo-300">La prochaine rupture technologique majeure</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row items-stretch w-full h-full gap-4">
+                        <div class="md:w-3/5 space-y-5 flex flex-col justify-center pr-6 border-r border-slate-700/50">
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                L'informatique quantique va bouleverser la capacité de traitement de l'information (Qubits vs Bits). Pour le veilleur, deux impacts critiques :
+                            </p>
+
+                            <div class="bg-slate-800/60 p-4 rounded-xl border-l-4 border-indigo-500">
+                                <h3 class="font-bold text-white text-base mb-1">1. Accélération de la Fouille (Algorithme de Grover)</h3>
+                                <p class="text-slate-400 text-xs text-justify">
+                                    Recherche quadratiquement plus rapide dans des bases de données non structurées. Capacité à analyser le <strong>Big Data</strong> en temps réel quasi-absolu.
+                                </p>
+                            </div>
+                            
+                            <div class="bg-slate-800/60 p-4 rounded-xl border-l-4 border-red-500">
+                                <h3 class="font-bold text-white text-base mb-1">2. La Menace Cryptographique (Algorithme de Shor)</h3>
+                                <p class="text-slate-400 text-xs text-justify">
+                                    Menace sur RSA/ECC. Stratégie de veille actuelle : <em>"Harvest Now, Decrypt Later"</em>. Nécessité de surveiller la <strong>Cryptographie Post-Quantique (PQC)</strong>.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="md:w-2/5 flex items-center justify-center relative min-h-[300px]">
+                            <div class="relative w-56 h-56 flex items-center justify-center perspective-1000">
+                                <div class="atom-orbit w-full h-full animate-[spin_3s_linear_infinite] border-cyan-400/60 shadow-[0_0_15px_rgba(6,182,212,0.2)]"></div>
+                                <div class="atom-orbit w-full h-full animate-[spin_4s_linear_infinite] border-purple-400/60 shadow-[0_0_15px_rgba(139,92,246,0.2)]" style="transform: rotateX(60deg);"></div>
+                                <div class="atom-orbit w-full h-full animate-[spin_5s_linear_infinite] border-green-400/60 shadow-[0_0_15px_rgba(16,185,129,0.2)]" style="transform: rotateY(60deg);"></div>
+                                <div class="absolute top-1/2 left-1/2 w-8 h-8 bg-white rounded-full shadow-[0_0_30px_#fff] transform -translate-x-1/2 -translate-y-1/2 animate-pulse z-10"></div>
+                                <div class="absolute -bottom-16 w-full text-center text-xs font-mono text-indigo-300 bg-black/40 rounded px-2 py-1">
+                                    |ψ⟩ = α|0⟩ + β|1⟩
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="slide hidden absolute inset-0 flex flex-col justify-center items-center text-center" data-step="8">
+                <div class="glass-panel p-12 rounded-3xl w-full max-w-4xl border-b-4 border-green-500 animate-fade-in-up">
+                    <div class="mb-6 inline-block p-4 rounded-full bg-yellow-500/10">
+                        <i class="fas fa-lightbulb text-6xl text-yellow-400 drop-shadow-lg"></i>
+                    </div>
                     
-                    <div class="cycle-step flex flex-col items-center group w-44 transition-all duration-300 hover:-translate-y-2">
-                        <div class="w-16 h-16 rounded-full bg-tech-800 border-2 border-tech-accent flex items-center justify-center z-10 shadow-[0_0_15px_rgba(6,182,212,0.5)] mb-4 group-hover:bg-tech-accent transition-colors">
-                            <i class="fa-solid fa-crosshairs text-xl text-white"></i>
-                        </div>
-                        <h4 class="font-bold text-tech-accent mb-2">1. Ciblage</h4>
-                        <p class="text-xs text-center text-gray-400 bg-black/50 p-2 rounded">Définir les besoins (Plan de Veille). Quoi chercher ? Pour qui ?</p>
-                    </div>
-
-                    <div class="cycle-step flex flex-col items-center group w-44 transition-all duration-300 hover:-translate-y-2 delay-100">
-                        <div class="w-16 h-16 rounded-full bg-tech-800 border-2 border-blue-500 flex items-center justify-center z-10 shadow-[0_0_15px_rgba(59,130,246,0.5)] mb-4 group-hover:bg-blue-500 transition-colors">
-                            <i class="fa-solid fa-magnet text-xl text-white"></i>
-                        </div>
-                        <h4 class="font-bold text-blue-400 mb-2">2. Collecte</h4>
-                        <p class="text-xs text-center text-gray-400 bg-black/50 p-2 rounded">Sourcing (Pull/Push). RSS, Crawlers, Réseaux humains.</p>
-                    </div>
-
-                    <div class="cycle-step flex flex-col items-center group w-44 transition-all duration-300 hover:-translate-y-2 delay-200">
-                        <div class="w-16 h-16 rounded-full bg-tech-800 border-2 border-purple-500 flex items-center justify-center z-10 shadow-[0_0_15px_rgba(139,92,246,0.5)] mb-4 group-hover:bg-purple-500 transition-colors">
-                            <i class="fa-solid fa-brain text-xl text-white"></i>
-                        </div>
-                        <h4 class="font-bold text-purple-400 mb-2">3. Analyse</h4>
-                        <p class="text-xs text-center text-gray-400 bg-black/50 p-2 rounded">Tri, Validation, Synthèse. Transformation de la donnée en info.</p>
-                    </div>
-
-                    <div class="cycle-step flex flex-col items-center group w-44 transition-all duration-300 hover:-translate-y-2 delay-300">
-                        <div class="w-16 h-16 rounded-full bg-tech-800 border-2 border-green-500 flex items-center justify-center z-10 shadow-[0_0_15px_rgba(34,197,94,0.5)] mb-4 group-hover:bg-green-500 transition-colors">
-                            <i class="fa-solid fa-share-nodes text-xl text-white"></i>
-                        </div>
-                        <h4 class="font-bold text-green-400 mb-2">4. Diffusion</h4>
-                        <p class="text-xs text-center text-gray-400 bg-black/50 p-2 rounded">Newsletters, Dashboards. Transmission à la direction.</p>
-                    </div>
-
-                    <div class="cycle-step flex flex-col items-center group w-44 transition-all duration-300 hover:-translate-y-2 delay-[400ms]">
-                        <div class="w-16 h-16 rounded-full bg-tech-800 border-2 border-tech-pink flex items-center justify-center z-10 shadow-[0_0_15px_rgba(236,72,153,0.5)] mb-4 group-hover:bg-tech-pink transition-colors">
-                            <i class="fa-solid fa-gavel text-xl text-white"></i>
-                        </div>
-                        <h4 class="font-bold text-tech-pink mb-2">5. Décision</h4>
-                        <p class="text-xs text-center text-gray-400 bg-black/50 p-2 rounded">Action stratégique. Innovation, pivot ou investissement.</p>
-                    </div>
-
-                </div>
-            </section>
-
-            
-
-            <!-- SLIDE 5: OUTILS & STACK -->
-            <section class="slide w-full h-full flex-col justify-start pt-12 px-4 md:px-16" data-step="5">
-                <h2 class="text-3xl font-bold mb-6 text-center">Outils de Veille</h2>
-                
-                <div class="w-full max-w-5xl mx-auto flex flex-col md:flex-row gap-6 h-[60vh]">
-                    <!-- Tabs -->
-                    <div class="flex md:flex-col gap-2 md:w-1/4">
-                        <button onclick="openTab('sourcing')" class="tab-btn active text-left p-4 rounded-lg bg-white/5 hover:bg-white/10 border-l-4 border-transparent hover:border-tech-accent transition-all focus:border-tech-accent">
-                            <i class="fa-solid fa-rss mr-2"></i> Sourcing
-                        </button>
-                        <button onclick="openTab('analysis')" class="tab-btn text-left p-4 rounded-lg bg-white/5 hover:bg-white/10 border-l-4 border-transparent hover:border-purple-500 transition-all focus:border-purple-500">
-                            <i class="fa-solid fa-chart-pie mr-2"></i> Analyse
-                        </button>
-                        <button onclick="openTab('diffusion')" class="tab-btn text-left p-4 rounded-lg bg-white/5 hover:bg-white/10 border-l-4 border-transparent hover:border-green-500 transition-all focus:border-green-500">
-                            <i class="fa-brands fa-telegram mr-2"></i> Diffusion
-                        </button>
-                    </div>
-
-                    <!-- Content -->
-                    <div class="glass-panel rounded-xl p-6 md:w-3/4 overflow-y-auto relative">
-                        
-                        <div id="sourcing" class="tab-content block animate-slide-up">
-                            <h3 class="text-xl font-bold mb-4 text-tech-accent">Méthodes de Collecte</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="bg-black/20 p-4 rounded border border-gray-700">
-                                    <h4 class="font-bold text-white mb-2">Méthode PULL</h4>
-                                    <p class="text-sm text-gray-400">L'utilisateur va chercher l'info.</p>
-                                    <ul class="text-xs mt-2 list-disc list-inside text-gray-500">
-                                        <li>Moteurs de recherche</li>
-                                        <li>Bases de données (IEEE, Patents)</li>
-                                    </ul>
-                                </div>
-                                <div class="bg-black/20 p-4 rounded border border-gray-700">
-                                    <h4 class="font-bold text-white mb-2">Méthode PUSH</h4>
-                                    <p class="text-sm text-gray-400">L'info vient à l'utilisateur.</p>
-                                    <ul class="text-xs mt-2 list-disc list-inside text-gray-500">
-                                        <li>Flux RSS (Feedly, Inoreader)</li>
-                                        <li>Google Alerts</li>
-                                        <li>Newsletters</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="analysis" class="tab-content hidden animate-slide-up">
-                            <h3 class="text-xl font-bold mb-4 text-purple-400">Outils d'Analyse</h3>
-                            <p class="mb-4 text-sm">Traiter la masse d'information pour en extraire du sens.</p>
-                            <div class="space-y-3">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded bg-indigo-900 flex items-center justify-center font-bold">KB</div>
-                                    <div>
-                                        <p class="font-bold">Kibana / ElasticSearch</p>
-                                        <p class="text-xs text-gray-400">Visualisation de Big Data & Logs.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded bg-blue-900 flex items-center justify-center font-bold">BI</div>
-                                    <div>
-                                        <p class="font-bold">Power BI / Tableau</p>
-                                        <p class="text-xs text-gray-400">Business Intelligence & Dashboards.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded bg-green-900 flex items-center justify-center font-bold">NLP</div>
-                                    <div>
-                                        <p class="font-bold">Text Mining (Python/NLTK)</p>
-                                        <p class="text-xs text-gray-400">Analyse sémantique et sentimentale.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="diffusion" class="tab-content hidden animate-slide-up">
-                            <h3 class="text-xl font-bold mb-4 text-green-400">Plateformes de Diffusion</h3>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="glass-card p-4 text-center">
-                                    <i class="fa-solid fa-envelope-open-text text-2xl mb-2"></i>
-                                    <p class="text-sm">Newsletters Internes</p>
-                                </div>
-                                <div class="glass-card p-4 text-center">
-                                    <i class="fa-solid fa-desktop text-2xl mb-2"></i>
-                                    <p class="text-sm">Portail Intranet / Wiki</p>
-                                </div>
-                                <div class="glass-card p-4 text-center">
-                                    <i class="fa-brands fa-slack text-2xl mb-2"></i>
-                                    <p class="text-sm">Outils Collaboratifs (Slack/Teams)</p>
-                                </div>
-                                <div class="glass-card p-4 text-center">
-                                    <i class="fa-solid fa-file-pdf text-2xl mb-2"></i>
-                                    <p class="text-sm">Rapports Stratégiques</p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </section>
-
-            <!-- SLIDE 6: RÔLE DE L'IA -->
-            <section class="slide w-full h-full flex-col justify-center items-center px-4" data-step="6">
-                <div class="absolute inset-0 z-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0wIDQwaDQwVjBIMHY0MHptMjAtMjBIMjB2MjBoMjBWMjB6IiBzdHlsZT0iZmlsbDojM2I4MmY2OyIvPjwvZz48L3N2Zz4=')]"></div>
-                
-                <h2 class="text-3xl font-bold mb-8 z-10">L'Impact de l'IA Générative</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl z-10">
-                    <div class="glass-panel p-8 rounded-2xl border border-gray-600 grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-                        <h3 class="text-2xl font-bold mb-4 border-b pb-2">Veille Traditionnelle</h3>
-                        <ul class="space-y-4 text-sm md:text-base">
-                            <li class="flex items-center gap-3"><i class="fa-solid fa-clock text-red-400"></i> Chronophage (Lecture manuelle).</li>
-                            <li class="flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-yellow-400"></i> Risque de surcharge informationnelle.</li>
-                            <li class="flex items-center gap-3"><i class="fa-solid fa-language text-gray-400"></i> Barrière de la langue.</li>
-                        </ul>
-                    </div>
-
-                    <div class="glass-panel p-8 rounded-2xl border-2 border-tech-accent shadow-[0_0_30px_rgba(6,182,212,0.2)]">
-                        <h3 class="text-2xl font-bold mb-4 border-b border-tech-accent pb-2 text-tech-accent">Veille Augmentée (IA)</h3>
-                        <ul class="space-y-4 text-sm md:text-base">
-                            <li class="flex items-center gap-3">
-                                <i class="fa-solid fa-robot text-tech-accent"></i>
-                                <span><strong>Filtrage Intelligent :</strong> NLP pour éliminer le bruit.</span>
-                            </li>
-                            <li class="flex items-center gap-3">
-                                <i class="fa-solid fa-bolt text-yellow-300"></i>
-                                <span><strong>Résumé Automatique :</strong> Synthèse de longs rapports en secondes (LLMs).</span>
-                            </li>
-                            <li class="flex items-center gap-3">
-                                <i class="fa-solid fa-globe text-blue-400"></i>
-                                <span><strong>Traduction Neuronale :</strong> Veille mondiale instantanée.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SLIDE 7: QUANTUM COMPUTING -->
-            <section class="slide w-full h-full flex-col justify-center items-center px-4" data-step="7">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-center">La Nouvelle Frontière : <span class="text-tech-pink">L'Informatique Quantique</span></h2>
-                <p class="text-center text-gray-400 mb-8 max-w-2xl">Une rupture technologique majeure à surveiller impérativement.</p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 w-full max-w-6xl items-center">
+                    <h2 class="text-4xl font-black text-white mb-6">Conclusion</h2>
                     
-                    <!-- Text Content -->
-                    <div class="glass-panel p-8 rounded-2xl animate-slide-up border-l-4 border-tech-pink">
-                        <h3 class="text-xl font-bold mb-4 text-white">Pourquoi veiller sur le Quantique ?</h3>
-                        <ul class="space-y-4">
-                            <li class="flex items-start gap-3">
-                                <i class="fa-solid fa-lock text-tech-pink mt-1"></i>
-                                <div>
-                                    <strong class="text-tech-pink">Rupture Cryptographique</strong>
-                                    <p class="text-sm text-gray-300">Menace sur RSA/ECC. Nécessité de transition vers la cryptographie post-quantique.</p>
-                                </div>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fa-solid fa-microchip text-tech-accent mt-1"></i>
-                                <div>
-                                    <strong class="text-tech-accent">Puissance de Calcul (Qubits)</strong>
-                                    <p class="text-sm text-gray-300">Résolution de problèmes complexes (Optimisation logistique, Simulation moléculaire).</p>
-                                </div>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fa-solid fa-globe text-purple-400 mt-1"></i>
-                                <div>
-                                    <strong class="text-purple-400">Souveraineté Numérique</strong>
-                                    <p class="text-sm text-gray-300">Course technologique entre grandes puissances (USA, Chine, Europe).</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Visual: Qubit / Atom Animation -->
-                    <div class="flex justify-center items-center h-64 md:h-80 relative">
-                        <!-- Orbit Rings -->
-                        <div class="absolute w-48 h-48 border border-tech-pink/30 rounded-full animate-orbit" style="animation-duration: 8s;"></div>
-                        <div class="absolute w-48 h-48 border border-tech-accent/30 rounded-full animate-orbit" style="animation-duration: 12s; transform: rotateX(60deg);"></div>
-                        <div class="absolute w-48 h-48 border border-purple-500/30 rounded-full animate-orbit" style="animation-duration: 15s; transform: rotateY(60deg);"></div>
-                        
-                        <!-- Electrons -->
-                        <div class="absolute w-full h-full animate-spin" style="animation-duration: 4s;">
-                            <div class="w-3 h-3 bg-tech-pink rounded-full shadow-[0_0_15px_#ec4899] absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
-                        </div>
-
-                        <!-- Nucleus -->
-                        <div class="w-12 h-12 bg-gradient-to-br from-tech-accent to-tech-purple rounded-full shadow-[0_0_30px_rgba(139,92,246,0.6)] animate-pulse-slow z-10 flex items-center justify-center font-bold text-xs">
-                           
-                        </div>
-
-                        <div class="absolute bottom-0 text-xs font-mono text-gray-500">Superposition & Intrication</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SLIDE 8: CONCLUSION -->
-            <section class="slide w-full h-full flex-col justify-center items-center text-center px-4 space-y-8" data-step="8">
-                <h2 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-tech-accent to-purple-500">Conclusion</h2>
-                
-                <div class="glass-panel p-8 rounded-2xl max-w-3xl animate-slide-up">
-                    <p class="text-xl md:text-2xl leading-relaxed">
-                        La veille technologique n'est pas une option, mais une <span class="font-bold text-white">condition de survie</span>.
+                    <p class="text-xl text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed">
+                        La veille technologique n'est plus une option, c'est une <span class="text-cyan-400 font-bold">condition de survie</span>. 
+                        Dans le cadre du MSII, elle doit intégrer l'IA et se préparer au Quantique pour garantir la souveraineté numérique.
                     </p>
-                    <hr class="border-gray-600 my-6">
-                    <p class="text-gray-300">
-                        Elle transforme l'incertitude en <span class="text-tech-accent font-bold">risque calculé</span> et l'information en <span class="text-tech-purple font-bold">action stratégique</span>.
-                    </p>
-                </div>
 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl text-xs text-gray-400 mt-8 text-left">
-                    <div>
-                        <strong class="text-white block mb-1">Références</strong>
-                        <ul class="list-disc pl-3">
-                            <li>ESLSCA (Blog)</li>
-                            <li>Ecole de Guerre Economique</li>
-                            <li>DataScientest</li>
+                    <div class="bg-slate-800/50 p-6 rounded-xl inline-block text-left mb-8 mx-auto">
+                        <ul class="text-slate-300 space-y-2 text-sm">
+                            <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i> Automatiser la collecte (Gain de temps).</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i> Humaniser l'analyse (Prise de décision).</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i> Anticiper les ruptures (Quantique).</li>
                         </ul>
                     </div>
-                    <div>
-                         <strong class="text-white block mb-1">Stack</strong>
-                         <ul class="list-disc pl-3">
-                             <li>Tailwind CSS</li>
-                             <li>JavaScript (Vanilla)</li>
-                             <li>Canvas API</li>
-                         </ul>
+
+                    <div class="mt-8 border-t border-slate-700 pt-6">
+                        <p class="text-2xl font-serif text-white italic">"Savoir pour prévoir, afin de pouvoir."</p>
+                        <p class="text-sm text-slate-500 mt-2 font-bold">- Auguste Comte</p>
                     </div>
-                </div>
-                
-                <div class="mt-12 opacity-50 text-sm">
-                    <p>Merci de votre attention.</p>
+
+                    <p class="mt-12 text-lg font-bold text-white">Merci de votre attention.</p>
                 </div>
             </section>
 
         </div>
 
-        <!-- FOOTER CONTROLS -->
-        <footer class="absolute bottom-0 w-full p-6 flex justify-between items-center z-20 controls">
-            <div class="flex gap-2" id="nav-dots">
-                <!-- Dots injected by JS -->
-            </div>
+        <div class="nav-controls fixed bottom-6 left-1/2 transform -translate-x-1/2 flex items-center gap-6 z-50 bg-slate-900/90 px-6 py-3 rounded-full border border-slate-700 backdrop-blur-md shadow-2xl">
+            <button id="prevBtn" class="w-10 h-10 rounded-full bg-slate-700 hover:bg-cyan-600 text-white transition flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed group">
+                <i class="fas fa-chevron-left group-hover:-translate-x-1 transition"></i>
+            </button>
             
-            <div class="flex gap-4">
-                <button id="prevBtn" class="w-12 h-12 rounded-full glass-panel flex items-center justify-center hover:bg-white/10 active:scale-95 transition">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button id="nextBtn" class="w-12 h-12 rounded-full bg-tech-accent text-black flex items-center justify-center hover:bg-cyan-400 active:scale-95 transition shadow-[0_0_15px_rgba(6,182,212,0.5)]">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
+            <div class="flex flex-col items-center min-w-[100px]">
+                <span id="slide-indicator" class="text-cyan-400 font-mono font-bold text-lg">1 / 9</span>
+                <div class="w-full h-1 bg-slate-700 rounded-full mt-1 overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-gradient-to-r from-cyan-500 to-purple-500 transition-all duration-300" style="width: 10%"></div>
+                </div>
             </div>
-        </footer>
+
+            <button id="nextBtn" class="w-10 h-10 rounded-full bg-slate-700 hover:bg-cyan-600 text-white transition flex items-center justify-center group">
+                <i class="fas fa-chevron-right group-hover:translate-x-1 transition"></i>
+            </button>
+        </div>
+        
+        <button onclick="document.documentElement.requestFullscreen()" class="fullscreen-btn fixed top-6 right-6 text-slate-500 hover:text-white transition bg-slate-900/50 p-3 rounded-full z-50">
+            <i class="fas fa-expand"></i>
+        </button>
 
     </main>
 
-    <!-- LOGIC -->
     <script>
         /**
-         * ANIMATED BACKGROUND (CANVAS)
-         * Creates a network of connecting particles
+         * 1. GESTION DU DIAPORAMA
+         */
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const indicator = document.getElementById('slide-indicator');
+        const progressBar = document.getElementById('progress-bar');
+        
+        let currentStep = 0;
+        const totalSteps = slides.length;
+
+        function updateSlide() {
+            // Masquer tout
+            slides.forEach(slide => {
+                slide.classList.add('hidden');
+                slide.classList.remove('flex');
+            });
+
+            // Afficher la slide active
+            const activeSlide = slides[currentStep];
+            activeSlide.classList.remove('hidden');
+            activeSlide.classList.add('flex');
+
+            // Reset Animation (Hack pour rejouer l'animation CSS)
+            const panel = activeSlide.querySelector('.animate-fade-in-up');
+            if(panel) {
+                panel.style.animation = 'none';
+                panel.offsetHeight; /* trigger reflow */
+                panel.style.animation = null; 
+            }
+
+            // Mise à jour UI
+            indicator.textContent = `${currentStep + 1} / ${totalSteps}`;
+            const progress = ((currentStep + 1) / totalSteps) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // États des boutons
+            prevBtn.disabled = currentStep === 0;
+            nextBtn.disabled = currentStep === totalSteps - 1;
+        }
+
+        function nextSlide() {
+            if (currentStep < totalSteps - 1) {
+                currentStep++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentStep > 0) {
+                currentStep--;
+                updateSlide();
+            }
+        }
+
+        // Listeners
+        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', prevSlide);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        /**
+         * 2. ANIMATION CANVAS (Réseau Tech/Finance)
          */
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let width, height;
         let particles = [];
 
-        // Configuration
-        const particleCount = 60;
-        const connectionDistance = 150;
-        // Mouse interaction removed as requested
-
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-
         class Particle {
             constructor() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                this.size = Math.random() * 2 + 1;
+                this.vx = (Math.random() - 0.5) * 0.4;
+                this.vy = (Math.random() - 0.5) * 0.4;
+                this.size = Math.random() * 2 + 0.5;
+                this.color = Math.random() > 0.5 ? '#06b6d4' : '#8b5cf6'; // Cyan or Purple
             }
 
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
-
-                // Bounce off edges
                 if (this.x < 0 || this.x > width) this.vx *= -1;
                 if (this.y < 0 || this.y > height) this.vy *= -1;
             }
 
             draw() {
-                ctx.fillStyle = 'rgba(6, 182, 212, 0.5)'; // Cyan
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
                 ctx.fill();
             }
         }
 
-        function initParticles() {
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
             particles = [];
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
-            }
+            for (let i = 0; i < 70; i++) particles.push(new Particle());
         }
 
         function animateCanvas() {
             ctx.clearRect(0, 0, width, height);
             
             // Draw connections
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i; j < particles.length; j++) {
-                    let dx = particles[i].x - particles[j].x;
-                    let dy = particles[i].y - particles[j].y;
-                    let distance = Math.sqrt(dx*dx + dy*dy);
-
-                    if (distance < connectionDistance) {
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+                
+                // Connect particles
+                for (let j = index + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                    if (dist < 120) {
                         ctx.beginPath();
-                        let opacity = 1 - (distance / connectionDistance);
-                        ctx.strokeStyle = 'rgba(59, 130, 246, ' + (opacity * 0.2) + ')'; // Blue lines
-                        ctx.lineWidth = 1;
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(139, 92, 246, ${0.15 - dist/800})`; // Purple lines
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
                         ctx.stroke();
                     }
                 }
-            }
-
-            // Update and draw particles
-            particles.forEach(p => {
-                p.update(); 
-                p.draw();
             });
-
             requestAnimationFrame(animateCanvas);
         }
 
-        window.addEventListener('resize', () => {
-            resize();
-            initParticles();
-        });
-
-        // Start Canvas
-        resize();
-        initParticles();
+        window.addEventListener('resize', initCanvas);
+        
+        // Init
+        initCanvas();
         animateCanvas();
-
-        /**
-         * PRESENTATION LOGIC
-         */
-        const slides = document.querySelectorAll('.slide');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const indicator = document.getElementById('slide-indicator');
-        const navDotsContainer = document.getElementById('nav-dots');
-        let currentSlide = 0;
-
-        // Create Navigation Dots
-        slides.forEach((_, index) => {
-            const dot = document.createElement('div');
-            dot.className = `w-2 h-2 rounded-full cursor-pointer transition-all duration-300 ${index === 0 ? 'bg-tech-accent w-6' : 'bg-gray-600'}`;
-            dot.addEventListener('click', () => goToSlide(index));
-            navDotsContainer.appendChild(dot);
-        });
-
-        const dots = navDotsContainer.querySelectorAll('div');
-
-        function updateUI() {
-            // Update Slides
-            slides.forEach((slide, index) => {
-                if (index === currentSlide) {
-                    slide.classList.add('active');
-                    // Reset animations in slide
-                    const animatedElements = slide.querySelectorAll('.animate-slide-up');
-                    animatedElements.forEach(el => {
-                        el.style.animation = 'none';
-                        el.offsetHeight; /* trigger reflow */
-                        el.style.animation = null; 
-                    });
-                } else {
-                    slide.classList.remove('active');
-                }
-            });
-
-            // Update Dots
-            dots.forEach((dot, index) => {
-                if (index === currentSlide) {
-                    dot.classList.remove('bg-gray-600');
-                    dot.classList.add('bg-tech-accent', 'w-6');
-                } else {
-                    dot.classList.remove('bg-tech-accent', 'w-6');
-                    dot.classList.add('bg-gray-600', 'w-2');
-                }
-            });
-
-            // Update Indicator
-            indicator.innerText = `0${currentSlide + 1} / 0${slides.length}`;
-
-            // Button states
-            prevBtn.disabled = currentSlide === 0;
-            prevBtn.style.opacity = currentSlide === 0 ? '0.3' : '1';
-            
-            if (currentSlide === slides.length - 1) {
-                nextBtn.innerHTML = '<i class="fa-solid fa-rotate-right"></i>'; // Restart icon
-            } else {
-                nextBtn.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
-            }
-        }
-
-        function goToSlide(index) {
-            if (index >= 0 && index < slides.length) {
-                currentSlide = index;
-                updateUI();
-            } else if (index >= slides.length) {
-                currentSlide = 0; // Loop back
-                updateUI();
-            }
-        }
-
-        // Event Listeners
-        nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
-        prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
-
-        // Keyboard Navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'Space') {
-                goToSlide(currentSlide + 1);
-            } else if (e.key === 'ArrowLeft') {
-                goToSlide(currentSlide - 1);
-            }
-        });
-
-        /**
-         * TAB LOGIC (Slide 5)
-         */
-        window.openTab = function(tabName) {
-            // Hide all contents
-            document.querySelectorAll('.tab-content').forEach(el => {
-                el.classList.add('hidden');
-                el.classList.remove('block');
-            });
-            // Show specific content
-            document.getElementById(tabName).classList.remove('hidden');
-            document.getElementById(tabName).classList.add('block');
-
-            // Update buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active', 'border-tech-accent', 'border-purple-500', 'border-green-500', 'bg-white/10');
-                btn.classList.add('border-transparent');
-            });
-            
-            // Add active style to clicked button
-            const activeBtn = event.currentTarget;
-            activeBtn.classList.remove('border-transparent');
-            activeBtn.classList.add('bg-white/10');
-            
-            // Color logic
-            if(tabName === 'sourcing') activeBtn.classList.add('border-tech-accent');
-            if(tabName === 'analysis') activeBtn.classList.add('border-purple-500');
-            if(tabName === 'diffusion') activeBtn.classList.add('border-green-500');
-        }
-
-        // Initialize
-        updateUI();
+        updateSlide();
 
     </script>
 </body>
